@@ -1,9 +1,8 @@
 import re
-import numpy as np
 
 test = [re.findall('\d+', l) for l in open("day5/data.txt")]
-from functools import reduce
-seeds = test[0]
+
+seeds = [int(elt) for elt in test[0]]
 
 
 def isolate(lst):
@@ -58,7 +57,4 @@ start_point = [elt for elt in tmp[-1] if elt[0] in min((elt[0] for elt in tmp[-1
 
 new_modif = [[[elt[1], elt[0], elt[2]] for elt in values] for values in tmp]
 
-test = iter_seed(new_modif[::-1], start_point[1])
-
-
-
+test = iter_seed(new_modif, start_point[0][1])
