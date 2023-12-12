@@ -59,12 +59,15 @@ for l, nb in lines:
     z = [tuple(chain.from_iterable(i)) for i in y]
     new_z = [tuple(i for i in elt if i != 0) for elt in z]
     idx = [i for i in range(len(z)) if new_z[i] == nb]
-
+    res = []
     for i in idx:
+        p = []
         indexes = y[i]
         prod = 1
         for k, j in enumerate(indexes):
             prod *= len(x[k][j])
+            p.append(x[k][j])
+        res.append(p)
         output += prod
     print(output)
 print(output)
