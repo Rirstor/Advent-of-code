@@ -44,6 +44,5 @@ for k in range(len(patterns)):
 
     part1 += mirror(data)
     part2 += mirror(data, 2)
-    print(1)
 
 print(part1, part2)
