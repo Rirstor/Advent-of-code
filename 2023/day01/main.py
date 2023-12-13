@@ -35,11 +35,11 @@ def calibration_part2(file):
 
 
 if __name__ == "__main__":
-    file = "day1/inputs/data.txt"
+    file = "day01/inputs/data.txt"
     cal = calibration_part1(file)
     print("The calibration coefficient for day 1 part 1 is ", cal)
 
-    file2 = "day1/inputs/data_part2.txt"
+    file2 = "day01/inputs/data_part2.txt"
 
     cal = calibration_part2(file2)
 
