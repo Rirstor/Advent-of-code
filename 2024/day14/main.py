@@ -1,5 +1,6 @@
 import re
 from math import prod
+from statistics import variance
 
 inputs = [line.strip() for line in open("input")]
 
@@ -31,43 +32,16 @@ for xmin, xmax in ((0, nbtiles // 2), (nbtiles // 2 + 1, nbtiles)):
 
 print(prod(part1))
 
-from re import findall
-data = open("input").read()
-W, H = 101, 103
-
-robots = [[int(n) for n in findall(r"(-?\d+)", item)] for item in data.split("\n")]
-
-import re
-
-w, h = 101, 103
-bots = [[*map(int, re.findall(r'-?\d+',l))]
-                   for l in open('input')]
-
-def danger(t):
-    a = b = c = d = 0
-
-    for x, y, dx, dy in bots:
-        x = (x + dx * t) % w
-        y = (y + dy * t) % h
-
-        a += x > w//2 and y > h//2
-        b += x > w//2 and y < h//2
-        c += x < w//2 and y > h//2
-        d += x < w//2 and y < h//2
-
-    return a * b * c * d
-
-print(danger(100))
-print(min(range(10_000), key=danger))
-
-
 # part2
 nb_quadrants = list()
+variances = list()
 for id_sec in range(10000):
     positions_each_sec = [f(*elt, t=id_sec) for elt in robots]
+    variances.append(variance(elt[0] for elt in positions_each_sec) * variance(elt[1] for elt in positions_each_sec))
     res = list()
     for xmin, xmax in ((0, nbtiles // 2), (nbtiles // 2 + 1, nbtiles)):
         for ymin, ymax in ((0, height // 2), (height // 2 + 1, height)):
             res.append(count_quadrant(xmin, xmax, ymin, ymax, positions_each_sec))
+
     nb_quadrants.append(prod(res))
-print(1)
+print([i for i in range(len(variances)) if variances[i] == min(variances)])
