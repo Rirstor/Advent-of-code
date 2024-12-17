@@ -1,66 +1,68 @@
 import re
 
-registers, program = ["".join(elt.split()) for elt in open("example").read().split(
+registers, program = ["".join(elt.split()) for elt in open("input").read().split(
     '\n\n')]
 registers = list(map(int, re.findall("(\d+)", registers)))
 program = list(map(int, re.findall("(\d+)", program)))
 
-pointer = 0
 
-
-def combo(value):
+def combo(value, r):
     if value <= 3:
         return value
     elif value == 4:
-        return registers[0]
+        return r[0]
     elif value == 5:
-        return registers[1]
+        return r[1]
     elif value == 6:
-        return registers[2]
+        return r[2]
 
 
-def tick():
-    global pointer
-    global halt
-    try:
+def tick(r):
+    pointer = 0
+    result = list()
+    while pointer < len(program):
         opcode, operand = program[pointer], program[pointer + 1]
-
-        c = combo(operand)
+        c = combo(operand, r)
         if opcode == 0:
-            registers[0] = registers[0] // (2 ** c)
+            r[0] = r[0] // (2 ** c)
             pointer += 2
         elif opcode == 1:
-            registers[1] = registers[1] ^ operand
+            r[1] = r[1] ^ operand
             pointer += 2
         elif opcode == 2:
-            registers[1] = c % 8
+            r[1] = c % 8
             pointer += 2
         elif opcode == 3:
-            if registers[0] != 0:
+            if r[0] != 0:
                 pointer = operand
             else:
                 pointer += 2
         elif opcode == 4:
-            registers[1] = registers[1] ^ registers[2]
+            r[1] = r[1] ^ r[2]
             pointer += 2
         elif opcode == 5:
             result.append(c % 8)
             pointer += 2
         elif opcode == 6:
-            registers[1] = registers[0] // (2 ** c)
+            r[1] = r[0] // (2 ** c)
             pointer += 2
         elif opcode == 7:
-            registers[2] = registers[0] // (2 ** c)
+            r[2] = r[0] // (2 ** c)
             pointer += 2
-    except IndexError:
-        halt = True
+    return result
 
 
-result = list()
-halt = False
-while not halt:
-    tick()
-part1 = ",".join(map(str, result))
+part1 = tick(registers)
+part1 = ",".join(map(str, part1))
 print(part1)
-print(registers)
 
+# part 2
+def find(a, index):
+    print(a)
+    result = tick([a, 0, 0])
+    if result == program: print(a)
+    if result == program[-index:] or not index:
+        for n in range(8): find(a * 8 + n, index + 1)
+
+
+part2 = find(0, 0)
