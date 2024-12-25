@@ -51,6 +51,8 @@ print(eval(part1))
 
 def flatten(dct):
     return chain.from_iterable(chain.from_iterable(chain.from_iterable(dct.values())))
+
+
 # part2
 bad_keys = list()
 keysx = sorted([key for key in dictw if key.startswith("x")])[::-1]
@@ -58,21 +60,23 @@ keysy = sorted([key for key in dictw if key.startswith("y")])[::-1]
 valuex = "0b" + "".join(str(dictw[k]) for k in keysx)
 valuey = "0b" + "".join(str(dictw[k]) for k in keysy)
 expected = bin(eval(valuex) + eval(valuey))
-for index in range(len(expected)-2):
-    bitexp = expected[len(expected) - (index +2)]
-    bitres = part1[len(expected) - (index +2)]
+for index in range(len(expected) - 2):
+    bitexp = expected[len(expected) - (index + 2)]
+    bitres = part1[len(expected) - (index + 2)]
     if bitexp != bitres:
         commands = dict()
-        for indexz in [index+1, index, index-1]:
+        for indexz in [index+2, index+1, index]:
             keyz = f"z{indexz:02d}"
             for c in operations:
-                res = [elt for elt in operations[c] if elt[-1]==keyz]
+                res = [elt for elt in operations[c] if elt[-1] == keyz]
                 if len(res) != 0:
                     if c not in commands:
                         commands[c] = [res]
                     else:
                         commands[c].append(res)
-        for _ in range(4):
+        # For each wrong bit, identify the wrong pattern in the commands
+        # Get the list of swaps by checking the pairs with a git diff with the input
+        for _ in range(3):
             values = list(flatten(commands))
             for elt in values:
                 if not (elt.startswith("x") or elt.startswith("y") or elt.startswith("z")):
@@ -84,5 +88,3 @@ for index in range(len(expected)-2):
                             else:
                                 if res not in commands[c]:
                                     commands[c].append(res)
-        print(1)
-
