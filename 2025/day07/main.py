@@ -4,29 +4,37 @@ inputs = open("day07/input").read().split("\n")
 
 [positions[inputs[row][col]].append(row + 1j * col) for row in range(len(inputs)) for col in range(len(inputs[0]))]
 
-start_point, end = positions["S"][0], len(inputs)
-beams, visited, splitters, timelines = [start_point], (start_point,), (), 0
-beams_count = {start_point : 1}
-for b in beams:
-    current_pos = b
-    index_row = 0
-    while index_row != end - 1:
-        index_row += 1
-        new_pos = current_pos + 1
-        if new_pos in positions["^"]:
-            splitters += (new_pos,)
-            pos1 = new_pos + 1j
-            pos2 = new_pos - 1j
-            beams_count[b] += 1
-            visited += (pos1,) + (pos2,)
-            if pos1 not in beams:
-                beams += (pos1,)
-                beams_count[pos1] = 1
-            if pos2 not in beams:
-                beams += (pos2,)
-            current_pos = pos2
-        elif new_pos in positions["."] and new_pos not in visited:
-            visited += (new_pos,)
-            current_pos = new_pos
+index_row, end, beams = 1, len(inputs) - 1, {positions["S"][0]: 1}
+splitters = ()
+while index_row != end:
+    splitters_row = [x for x in positions["^"] if x.real == index_row]
+    to_remove = list()
+    new_bs = list()
+    value = 0
+    keys_to_add, to_remove = {}, list()
+    for b in beams:
+        value = beams[b]
 
-print(len(splitters))
+        for s in splitters_row:
+            if b.real +1 == s.real and b.imag == s.imag:
+                splitters += (s, )
+                to_remove.append(b)
+                b1, b2 = b - 1j, b + 1j
+                for key, value in zip((b1, b2), (value, value)):
+                    if key == 6 +8j:
+                        print(1)
+                    if key in keys_to_add:
+                        keys_to_add[key] += value
+                    else:
+                        keys_to_add[key] = value
+                break
+    [beams.pop(elt) for elt in set(to_remove)]
+    for key, value in keys_to_add.items():
+        if key in beams:
+            beams[key] += value
+        else:
+            beams[key] = value
+    beams = {key + 1 : value for key, value in beams.items()}
+    index_row += 1
+
+print(len(set(splitters))), print(sum(beams.values()))
